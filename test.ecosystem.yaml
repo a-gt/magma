@@ -1,0 +1,9 @@
+apps:
+  - script: './src/index.js'
+    watch: '.'
+    watch_delay: 1000
+    ignore_watch: ['node_modules', '.git', 'logs']
+    name: 'Magma Dev'
+    args: '--color'
+    env:
+      NODE_ENV: dev

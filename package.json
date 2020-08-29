@@ -1,14 +1,16 @@
 {
-  "name": "prometheus",
+  "name": "Magma",
   "version": "1.0.0",
   "description": "A fun and unique general purpose bot that has loads of features.",
   "main": "src/index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "pm2 start test.ecosystem.yaml && pm2 logs --raw",
+    "start": "pm2 start prod.ecosystem.yaml && pm2 monit",
+    "stop": "pm2 kill"
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/ApexioDaCoder/Prometheus.git"
+    "url": "git+https://github.com/ApexioDaCoder/Magma.git"
   },
   "keywords": [
     "discord",
@@ -18,13 +20,16 @@
   "author": "ApexioDaCoder",
   "license": "MIT",
   "bugs": {
-    "url": "https://github.com/ApexioDaCoder/Prometheus/issues"
+    "url": "https://github.com/ApexioDaCoder/Magma/issues"
   },
-  "homepage": "https://github.com/ApexioDaCoder/Prometheus#readme",
+  "homepage": "https://github.com/ApexioDaCoder/Magma#readme",
   "dependencies": {
     "axios": "^0.20.0",
+    "chalk": "^4.1.0",
     "discord.js": "^12.3.1",
     "dotenv": "^8.2.0",
+    "lodash": "^4.17.20",
+    "moment": "^2.27.0",
     "mongoose": "^5.10.0",
     "numeral": "^2.0.6",
     "yaml": "^1.10.0"

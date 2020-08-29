@@ -1,0 +1,6 @@
+apps:
+  - script: './src/index.js'
+    name: 'Magma Production'
+    args: '--color'
+    env:
+      NODE_ENV: production
