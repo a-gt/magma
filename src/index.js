@@ -1,9 +1,14 @@
 require('./Utils/Console')();
 require('dotenv').config();
+const path = require('path');
+global.include = function (...file) {
+    return require(path.resolve(...file));
+};
 const chalk = require('chalk');
 const Magma = require('./Core');
 const fs = require('fs');
-const yaml = require('yaml')
+const yaml = require('yaml');
+const templater = include('Utils/')
 
 const client = new Magma.client();
 
@@ -15,8 +20,7 @@ const boot = async () => {
   await Promise.all(
     dirs.map(async dir => {
       const files = fs.readdirSync(`${__dirname}/Commands/${dir}`).filter(file => file.endsWith('.js'));
-      console.log(yaml.parse(fs.readFileSync(`${__dirname}/Commands/${dir}/category.yml`, 'utf8')))
-      console.log(dirs, files)
+      const category = yaml.parse(fs.readFileSync(`${__dirname}/Commands/${dir}/category.yml`, 'utf8'));
       const cmds = [];
       await Promise.all(files.map(async cmdFile => {}));
     }),

@@ -25,14 +25,6 @@ class Magma extends Discord.Client {
     }
     return false;
   }
-
-  shorten (str, max) {
-    const shortened =
-
-        str.length > max ? `${str.slice(0, max - 3)}...` :
-        str;
-    return shortened;
-  }
 }
 
 module.exports = Magma;
