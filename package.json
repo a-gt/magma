@@ -1,5 +1,5 @@
 {
-  "name": "Magma",
+  "name": "magma",
   "version": "1.0.0",
   "description": "A fun and unique general purpose bot that has loads of features.",
   "main": "src/index.js",

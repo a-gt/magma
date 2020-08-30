@@ -26,7 +26,7 @@ module.exports = () => {
         `[${chalk.blueBright('BOOT')}] ${chalk.white(
           `${
             typeof log === 'string' ? log :
-            util.inspect(log, false, null, true)}`,
+            util.inspect(log, false, 4, true)}`,
         )}`,
       );
     });
@@ -39,7 +39,7 @@ module.exports = () => {
         `[${chalk.redBright('BOOT')}] ${chalk.gray(time)} ${chalk.white(
           `${
             typeof log === 'string' ? log :
-            util.inspect(log, false, null, true)}`,
+            util.inspect(log, false, 4, true)}`,
         )}`,
       );
     });
@@ -55,13 +55,13 @@ module.exports = () => {
         `[${chalk.blueBright('INFO')}] ${chalk.white(
           `${
             typeof log === 'string' ? log :
-            util.inspect(log, false, null, true)}`,
+            util.inspect(log, false, 4, true)}`,
         )}`,
       );
       infoFile.write(
         `[${time}] ${
           typeof log === 'string' ? log :
-          util.inspect(log, false, null, false)}\n`,
+          util.inspect(log, false, 4, false)}\n`,
       );
     });
   };
@@ -77,13 +77,13 @@ module.exports = () => {
         `[${chalk.yellowBright('WARN')}] ${chalk.gray(time)} ${chalk.white(
           `${
             typeof log === 'string' ? log :
-            util.inspect(log, false, null, true)}`,
+            util.inspect(log, false, 4, true)}`,
         )}`,
       );
       warnFile.write(
         `[${time}] ${
           typeof log === 'string' ? log :
-          util.inspect(log, false, null, false)}}\n`,
+          util.inspect(log, false, 4, false)}}\n`,
       );
     });
   };
@@ -99,13 +99,13 @@ module.exports = () => {
         `[${chalk.redBright('ERROR')}] ${chalk.gray(time)} ${chalk.white(
           `${
             typeof log === 'string' ? log :
-            util.inspect(log, false, null, true)}`,
+            util.inspect(log, false, 4, true)}`,
         )}`,
       );
       errorFile.write(
         `[${time}] ${
           typeof log === 'string' ? log :
-          util.inspect(log, false, null, false)}\n`,
+          util.inspect(log, false, 4, false)}\n`,
       );
     });
   };
@@ -117,7 +117,7 @@ module.exports = () => {
         `[${chalk.gray('DEBUG')}] ${chalk.white(
           `${
             typeof log === 'string' ? log :
-            util.inspect(log, false, null, true)}`,
+            util.inspect(log, false, 4, true)}`,
         )}`,
       );
     });
