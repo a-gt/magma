@@ -53,7 +53,7 @@ module.exports = class Command {
         this.aliases[0] === undefined ? '' :
         `/${this.aliases.join('/')}`} ` + usage.join(' ');
     this.commands = new Collection();
-    this.subAliases = new Collection();
+    this._aliases = new Collection();
   }
 
   run (msg) {
@@ -61,7 +61,7 @@ module.exports = class Command {
   }
 
   getSub (name) {
-    return this.commands.get(this.subAliases.get(name));
+    return this.commands.get(this._aliases.get(name));
   }
 
   setup () {
@@ -80,7 +80,7 @@ module.exports = class Command {
           if (cmd.enabled) {
             cmd.isSub = true;
             this.commands.set(cmd.name.toLowerCase(), cmd);
-            this.subAliases.set(cmd.name.toLowerCase(), cmd.name.toLowerCase());
+            this._aliases.set(cmd.name.toLowerCase(), cmd.name.toLowerCase());
             cmd.aliases.forEach(alias => this.aliases.set(alias.toLowerCase(), cmd.name.toLowerCase()));
           }
           else {

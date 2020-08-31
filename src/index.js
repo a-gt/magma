@@ -1,20 +1,23 @@
 global.startTime = Date.now();
-global.Emojis = require('./Utils/Emojis.json')
-global.Colors = require('./Utils/Colors.json')
+global.Utils = require('./Utils');
 global.include = function (file) {
   return require(path.resolve('src/' + file));
 };
+
 require('./Utils/Console')();
 require('./Utils/Prototypes')();
 require('dotenv').config();
+
 const path = require('path');
 const chalk = require('chalk');
 const Magma = require('./Core');
+
 global.Command = Magma.Command;
+
 const fs = require('fs');
 const yaml = require('yaml');
 const _ = require('lodash');
-const onMessage = require('./Events/Message')
+const onMessage = require('./Events/Message');
 
 const client = new Magma.Client({
   defaultImageFormat : 'png',
@@ -22,11 +25,9 @@ const client = new Magma.Client({
   disableEvents      : [
     'TYPING_START',
   ],
-  groups : {
-    mod: () => {
-      
-    }
-  }
+  groups             : {
+    mod : () => {},
+  },
 });
 
 const boot = async () => {
@@ -34,19 +35,13 @@ const boot = async () => {
   console.bootLog(`Made by ${chalk.blueBright('ApexioDaCoder')}!`);
   console.bootLog('Loading commands from src/Commands.');
   const dirs = fs.readdirSync(__dirname + '/Commands');
+  const commands = [];
   await Promise.all(
     dirs.map(async dir => {
       let loaded = 0,
         skipped = 0;
       const files = fs.readdirSync(path.resolve('src', 'commands', `${dir}`)).filter(file => !file.endsWith('.yml'));
       const category = yaml.parse(fs.readFileSync(`${__dirname}/Commands/${dir}/category.yml`, 'utf8'));
-      client.categories.set(category.fancy_name || 'Category', {
-        fancy_name : 'Category',
-        thumb      : 'https://i.imgur.com/OfVMmTm.png',
-        group      : 'public',
-        name       : 'general',
-        ...category,
-      });
       await Promise.all(
         files.map(async cmdFile => {
           const _dir = path.resolve('src', 'commands', `${dir}`, `${cmdFile}`);
@@ -71,12 +66,21 @@ const boot = async () => {
               client.commands.set(cmd.name.toLowerCase(), cmd);
               client.aliases.set(cmd.name.toLowerCase(), cmd.name.toLowerCase());
               cmd.aliases.forEach(alias => client.aliases.set(alias.toLowerCase(), cmd.name.toLowerCase()));
+              commands.push(cmd.name);
               loaded += 1;
             }
             else skipped += 1;
           }
         }),
       );
+      client.categories.set(category.name || 'general', {
+        fancy_name : 'General',
+        thumbnail  : 'https://i.imgur.com/OfVMmTm.png',
+        group      : 'public',
+        name       : 'general',
+        ...category,
+        commands,
+      });
       console.bootLog(
         `Loaded ${chalk.cyanBright(loaded)} command(s) and skipped ${chalk.cyanBright(
           skipped,
@@ -84,7 +88,7 @@ const boot = async () => {
       );
     }),
   );
-  client.login(process.env.DISCORD_TOKEN).catch((error) => console.log(error));
+  client.login(process.env.DISCORD_TOKEN).catch(error => console.log(error));
 };
 
 boot();
@@ -98,4 +102,4 @@ client.once('ready', async () => {
 // client.on('debug', m => console.debug(m));
 client.on('warn', m => console.warn(m));
 client.on('error', m => console.error(m));
-client.on('message', msg => onMessage(msg))
+client.on('message', msg => onMessage(msg));

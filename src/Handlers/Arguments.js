@@ -24,6 +24,8 @@ const type = async (type, arg, str, msg) => {
         else value = num;
       }
       break;
+    default:
+      value = str;
   }
   return value;
 };
@@ -48,6 +50,8 @@ const typeFancyName = (type, arg) => {
     case 'number':
       name = 'Number';
       break;
+    default:
+      name = type;
   }
   return name;
 };

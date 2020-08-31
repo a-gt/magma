@@ -1,7 +1,7 @@
 module.exports = class extends Command {
   constructor (client) {
     super(client, {
-      name    : 'hello',
+      name    : 'react',
       enabled : true,
     });
   }
@@ -9,9 +9,8 @@ module.exports = class extends Command {
   run (msg) {
     msg.channel.send({
       embed : {
-        color       : Colors.burple,
-        title       : 'Test',
-        description : 'Subcommands work!',
+        color : Utils.Colors.burple,
+        title : 'Reactions',
       },
     });
   }
