@@ -1,8 +1,8 @@
 const _ = require('lodash');
 
 module.exports = class extends Command {
-  constructor (client) {
-    super(client, {
+  constructor (...options) {
+    super(...options, {
       name    : 'help',
       aliases : [
         'commands',
@@ -19,26 +19,30 @@ module.exports = class extends Command {
     const prefix = '?';
     const { commands, categories } = this.client;
     const categoryArray = categories.array();
+    // Set up for paginated embed
     const categoryNames =
-      '**Page 1:** *Magma Help*\n' +
-      categoryArray.map((category, index) => `**Page ${index + 2}:** *${category.fancy_name}*`).join('\n');
+      '**Page 1:** <:magma:750113593168756776> *Magma Help*\n' +
+      categoryArray
+        .map((category, index) => `**Page ${index + 2}:** ${category.emoji} *${category.fancy_name}*`)
+        .join('\n');
     let data = [
       {
         author      : {
           name     : `Magma Help`,
-          icon_url : this.client.user.displayAvatarURL({ format: 'png', dynamic: true }),
+          icon_url : 'https://cdn.discordapp.com/app-icons/735320616453800017/fcc0fd039112c2d4c3b8f2a8a0ae460b.png',
         },
         color       : '#2F3136',
         thumbnail   : {
-          url : 'https://i.imgur.com/Nustsvf.png',
+          url : 'https://cdn.discordapp.com/app-icons/735320616453800017/fcc0fd039112c2d4c3b8f2a8a0ae460b.png',
         },
-        description : `Help Page\n\n${categoryNames}\n\n:arrow_left:**:** Page Backward.\n :arrow_right:**:** Page Forward.\n :arrow_upper_right:**:** Go to any page.\n :wastebasket:**:** Close help menu.`,
+        description : `Help Page\n\n${categoryNames}`,
       },
     ];
     categoryArray.map(category => {
       const fields = [];
       category.commands.map((_command, i) => {
         const command = commands.get(_command);
+        if (command.hidden) return;
         fields.push({
           name  : `${i + 1}. ${prefix}${command.usage}`,
           value : `\`\`\`${command.description}\`\`\``,
@@ -58,17 +62,25 @@ module.exports = class extends Command {
       });
     });
     if (!args.command) {
+      // Send all commands
       new Utils.PageMenu(msg.channel, msg.author.id, 30000, Utils.Emojis.arrows, {
         data  : data,
         trash : true,
         jump  : true,
+        embed : {
+          footer : {
+            text : 'Use the emojis to change pages.',
+          },
+        },
       });
       return;
     }
     const name = args.command.toLowerCase();
     const command = this.client.getCommand(name);
 
+    // Check if its a command
     if (!command) {
+      // Check if its a category
       const category = categories.get(name);
       if (!category) return msg.channel.send(`${Utils.Emojis.unavailable} **That's not a valid command or category.**`);
       let num = 0;
@@ -80,9 +92,15 @@ module.exports = class extends Command {
         trash : true,
         jump  : true,
         start : num,
+        embed : {
+          footer : {
+            text : 'Use the emojis to change pages.',
+          },
+        },
       });
       return;
     }
+    // Send command data
 
     const { category } = command;
     const _category = categories.get(category);

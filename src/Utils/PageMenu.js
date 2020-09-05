@@ -152,8 +152,8 @@ class PageMenu {
       for (const reactionEmoji of userReactions.values()) {
         await reactionEmoji.users.remove(user);
       }
-    } catch (error) {
-      this.error(error);
+    } catch {
+      return;
     }
   }
 

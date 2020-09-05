@@ -7,34 +7,42 @@ const { Collection } = require('discord.js');
 module.exports = class Command {
   constructor (
     client,
+    category = {
+      fancy_name : 'General',
+      thumbnail  : 'https://i.imgur.com/OfVMmTm.png',
+      group      : 'public',
+      name       : 'general',
+      emoji      : '<:info:750110959548498041>',
+    },
     {
       name = 'command',
       description = 'No description provided.',
-      category = 'General',
       enabled = true,
       guildOnly = false,
       aliases = new Array(),
-      permission = {
+      permissions = {
         bot  : new Array(),
-        user : new Array(),
+        user : 'public',
       },
       args = new Array(),
       cooldown = 6,
       hasSubs = false,
+      hidden = false,
     },
   ) {
     this.client = client;
+    this.category = category;
     const config = {
       name,
       description,
-      category,
       enabled,
       guildOnly,
       aliases,
-      permission,
+      permissions,
       args,
       cooldown,
       hasSubs,
+      hidden,
     };
     for (const key in config) {
       this[key] = config[key];
@@ -68,7 +76,8 @@ module.exports = class Command {
     if (this.hasSubs && !this.isSub) {
       if (!this._dir) throw new Error(`No Subcommands directory found.`);
       const files = fs.readdirSync(this._dir).filter(file => file !== 'index.js');
-      if (files.length === 0) return console.warn(`${chalk.cyanBright(this.name.toProperCase())} does not have any subcommands.`);
+      if (files.length === 0)
+        return console.warn(`${chalk.cyanBright(this.name.toProperCase())} does not have any subcommands.`);
       files.map(async cmdFile => {
         const _dir = path.resolve(`${this._dir}`, `${cmdFile}`);
         const ImportedCmd = require(_dir);
@@ -76,7 +85,7 @@ module.exports = class Command {
           console.warn(`${chalk.cyanBright(_dir)} does not export anything.`);
         }
         else {
-          const cmd = new ImportedCmd(this.client);
+          const cmd = new ImportedCmd(this.client, this.category);
           if (cmd.enabled) {
             cmd.isSub = true;
             this.commands.set(cmd.name.toLowerCase(), cmd);

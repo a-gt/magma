@@ -1,14 +1,18 @@
 module.exports = class extends Command {
-  constructor (client) {
-    super(client, {
-      name    : 'args',
-      aliases : [
+  constructor (...options) {
+    super(...options, {
+      name        : 'args',
+      aliases     : [
         'arg',
       ],
-      args    : [
+      hidden      : true,
+      permissions : {
+        user : 'owner',
+      },
+      args        : [
         {
-          key : 'args',
-          required: true
+          key      : 'args',
+          required : true,
         },
       ],
     });

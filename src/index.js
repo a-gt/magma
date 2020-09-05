@@ -26,7 +26,28 @@ const client = new Magma.Client({
     'TYPING_START',
   ],
   groups             : {
-    mod : () => {},
+    owner : member => {
+      return member.id === '541093152497598494';
+    },
+    admin : member => {
+      return member.hasPermission(
+        [
+          'ADMINISTRATOR',
+        ],
+        { checkAdmin: true, checkOwner: true },
+      );
+    },
+    mod   : member => {
+      return member.hasPermission(
+        [
+          'KICK_MEMBERS',
+          'BAN_MEMBERS',
+          'MANAGE_MESSAGES',
+        ],
+        { checkAdmin: true, checkOwner: true },
+      );
+    },
+    none  : () => false,
   },
 });
 
@@ -56,7 +77,7 @@ const boot = async () => {
             console.warn(`${chalk.cyanBright(cmdPath)} does not export anything.`);
           }
           else {
-            const cmd = new ImportedCmd(client);
+            const cmd = new ImportedCmd(client, category);
             if (cmd.enabled) {
               cmd._dir = _dir;
               cmd.hasSubs = hasSubs;
@@ -78,6 +99,7 @@ const boot = async () => {
         thumbnail  : 'https://i.imgur.com/OfVMmTm.png',
         group      : 'public',
         name       : 'general',
+        emoji      : '<:info:750110959548498041>',
         ...category,
         commands,
       });

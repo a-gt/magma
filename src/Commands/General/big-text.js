@@ -1,6 +1,6 @@
 module.exports = class extends Command {
-  constructor (client) {
-    super(client, {
+  constructor (...options) {
+    super(...options, {
       name    : 'big-text',
       aliases : [
         'big-text',
