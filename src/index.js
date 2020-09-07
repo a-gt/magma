@@ -54,15 +54,15 @@ const client = new Magma.Client({
 const boot = async () => {
   console.bootLog(`Starting ${chalk.red('Magma')} on ${process.env.NODE_ENV} environment.`);
   console.bootLog(`Made by ${chalk.blueBright('ApexioDaCoder')}!`);
-  console.bootLog('Loading commands from src/Commands.');
+  console.bootLog(chalk.yellow('Loading commands from src/Commands...'));
   const dirs = fs.readdirSync(__dirname + '/Commands');
-  const commands = [];
   await Promise.all(
     dirs.map(async dir => {
       let loaded = 0,
         skipped = 0;
       const files = fs.readdirSync(path.resolve('src', 'commands', `${dir}`)).filter(file => !file.endsWith('.yml'));
       const category = yaml.parse(fs.readFileSync(`${__dirname}/Commands/${dir}/category.yml`, 'utf8'));
+      const commands = [];
       await Promise.all(
         files.map(async cmdFile => {
           const _dir = path.resolve('src', 'commands', `${dir}`, `${cmdFile}`);
@@ -110,6 +110,7 @@ const boot = async () => {
       );
     }),
   );
+  console.bootLog(chalk.yellow('Finished loading commands.'));
   client.login(process.env.DISCORD_TOKEN).catch(error => console.log(error));
 };
 

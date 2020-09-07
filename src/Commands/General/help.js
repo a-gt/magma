@@ -3,11 +3,12 @@ const _ = require('lodash');
 module.exports = class extends Command {
   constructor (...options) {
     super(...options, {
-      name    : 'help',
-      aliases : [
+      name        : 'help',
+      description : 'Do this command when you need help.',
+      aliases     : [
         'commands',
       ],
-      args    : [
+      args        : [
         {
           key : 'command',
         },
@@ -19,27 +20,32 @@ module.exports = class extends Command {
     const prefix = '?';
     const { commands, categories } = this.client;
     const categoryArray = categories.array();
-    // Set up for paginated embed
+    // Set up paginated embed
     const categoryNames =
-      '**Page 1:** <:magma:750113593168756776> *Magma Help*\n' +
+      '**Page 1:** *Magma Help*\n' +
       categoryArray
-        .map((category, index) => `**Page ${index + 2}:** ${category.emoji} *${category.fancy_name}*`)
+        .map(
+          (category, index) =>
+            `**Page ${index + 2}:** ${category.emoji} *${category.fancy_name}* **-** ${category.description || 'No description provided.'}`,
+        )
         .join('\n');
     let data = [
       {
         author      : {
           name     : `Magma Help`,
-          icon_url : 'https://cdn.discordapp.com/app-icons/735320616453800017/fcc0fd039112c2d4c3b8f2a8a0ae460b.png',
+          icon_url :
+            'https://cdn.discordapp.com/avatars/735320616453800017/2e9f19b18cf555db194df3c168047e0c.png?size=512',
         },
-        color       : '#2F3136',
+        color       : Utils.Colors.embed,
         thumbnail   : {
-          url : 'https://cdn.discordapp.com/app-icons/735320616453800017/fcc0fd039112c2d4c3b8f2a8a0ae460b.png',
+          url : 'https://cdn.discordapp.com/avatars/735320616453800017/2e9f19b18cf555db194df3c168047e0c.png?size=512',
         },
-        description : `Help Page\n\n${categoryNames}`,
+        description : `***Magma*** is a fun and unique general purpose bot that has loads of features including, but not limited to, per guild prefix, a full-featured leveling system, and a host of fun commands.\n\n${categoryNames}`,
       },
     ];
     categoryArray.map(category => {
       const fields = [];
+
       category.commands.map((_command, i) => {
         const command = commands.get(_command);
         if (command.hidden) return;
@@ -48,6 +54,12 @@ module.exports = class extends Command {
           value : `\`\`\`${command.description}\`\`\``,
         });
       });
+      if (fields.length === 0) {
+        fields.push({
+          name  : `No commands found for this category.`,
+          value : String.fromCharCode(8203),
+        });
+      }
       data.push({
         author      : {
           name     : category.fancy_name,
@@ -136,7 +148,7 @@ module.exports = class extends Command {
         name  : 'Description',
         value : `\`\`\`${command.description}\`\`\``,
       });
-    /*if (command.subCommands) {
+    if (command.commands.size > 0) {
       data.fields.push({
         name  : 'Sub Commands',
         value : `**\`\`\`${command.subCommands
@@ -145,7 +157,7 @@ module.exports = class extends Command {
           })
           .join('\n\n')}\`\`\`**`,
       });
-    }*/
+    }
     if (command.usage)
       data.fields.push({
         name  : 'Usage',
@@ -163,7 +175,7 @@ module.exports = class extends Command {
               timeout : 0,
               reason  : 'Free up clutter',
             })
-            .categoryArraych(() => {
+            .catch(() => {
               return;
             });
         }, 70000);

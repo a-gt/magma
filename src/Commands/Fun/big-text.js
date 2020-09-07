@@ -1,12 +1,13 @@
 module.exports = class extends Command {
   constructor (...options) {
     super(...options, {
-      name    : 'big-text',
-      aliases : [
+      name        : 'big-text',
+      aliases     : [
         'big-text',
         'big',
       ],
-      args    : [
+      description : 'See your text in big emojis.',
+      args        : [
         {
           key      : 'text',
           required : true,

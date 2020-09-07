@@ -26,15 +26,20 @@ const parseMessage = async (msg, command, argsArray) => {
     msg.client.groups.hasOwnProperty(command.permissions.user) ? msg.client.groups[command.permissions.user](member) :
     true;
   if (hasPerms) {
+    if (argsArray.length > cmdArgs.length) {
+      return msg.channel.send({
+        embed : {
+          title       : `${Utils.Emojis.invalid} Invalid Arguments passed into "${command.name.toProperCase()}"`,
+          description : `**Too many arguments passed. Only needed ${cmdArgs.length} arguments.**`,
+          color       : Utils.Colors.red,
+        },
+      });
+    }
     await Promise.all(
       cmdArgs.map(async (arg, index) => {
-        const equivalent = argsArray[index];
+        let equivalent = argsArray[index];
         // Set up type
         let valid = await isType(arg, equivalent, msg);
-        // Last arg
-        if (index === cmdArgs.length - 1) {
-          valid = await isType(arg, argsArray.slice(index, args.length).join(' '), msg);
-        }
         // Missing Arguments
         if (!equivalent && arg.required) {
           invalids.push(undefined);
@@ -97,6 +102,10 @@ const parseMessage = async (msg, command, argsArray) => {
 };
 
 const runCommand = (msg, command, args) => {
+  if (msg.channel.type !== 'text') return;
+  msg.delete({ timeout: 0, reason: '' }).catch(() => {
+    return;
+  });
   if (command.commands.size > 0) {
     const subCommand = command.getSub(args[0]);
     if (subCommand) {

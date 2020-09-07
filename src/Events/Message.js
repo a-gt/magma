@@ -15,26 +15,42 @@ module.exports = msg => {
       ,
       matchedPrefix,
     ] = msg.content.match(prefixRegex);
-    args = msg.content.slice(matchedPrefix.length).trim().split(/ +/);
+    args = msg.content.slice(matchedPrefix.length).trim().split(/\ +/);
   }
   else {
     args = msg.content.split(/\ +/);
   }
   let commandName = args.shift().toLowerCase();
-  let cmd =
-    client.getCommand(commandName)
+  let cmd = client.getCommand(commandName);
 
   if (!cmd) {
     const firstArg = args.shift();
     if (!firstArg) return;
     commandName = firstArg.toLowerCase();
-    const cmdTest =
-      client.getCommand(commandName);
+    const cmdTest = client.getCommand(commandName);
     if (cmdTest) {
       cmd = cmdTest;
     }
     else return;
   }
+
+  const quotes = args.join(' ').split(/"/g);
+
+  const _args = [];
+
+  quotes.forEach((text, index) => {
+    if (text === '') {
+      return;
+    }
+    else if (index % 2 !== 0) _args.push(text);
+    else {
+      const splitText = text.split(/\ +/);
+      splitText.forEach(_text => {
+        if (_text === '') return;
+        _args.push(_text);
+      });
+    }
+  });
 
   if (cmd.guildOnly && msg.channel.type !== 'text') {
     return;
@@ -45,7 +61,7 @@ module.exports = msg => {
     msg.author,
     cmd.cooldown,
     () => {
-      runCommand(msg, cmd, args);
+      runCommand(msg, cmd, _args);
     },
     timeLeft => {
       return msg.reply(`Please wait ${timeLeft.toFixed(1)} more second(s) before reusing the \`${cmd.name}\` cmd.`);
