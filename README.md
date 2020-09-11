@@ -1,4 +1,4 @@
-![Magma Banner](https://i.imgur.com/4RNBh49.png)
+![Magma Banner](https://i.imgur.com/WPz5z7D.png)
 # Magma - The best discord bot.
 **Work in Progress**
 
