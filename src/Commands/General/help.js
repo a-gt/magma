@@ -45,7 +45,7 @@ module.exports = class extends Command {
     ];
     categoryArray.map(category => {
       const fields = [];
-      
+
       category.commands.map((_command, i) => {
         const command = commands.get(_command);
         if (command.hidden) return;
@@ -99,7 +99,7 @@ module.exports = class extends Command {
       categoryArray.forEach((_category, i) => {
         if (_category.name === category.name) num = i + 2;
       });
-      new Utils.PageMenu(msg.channel, msg.author.id, Utils.Emojis.arrows, 30000, {
+      new Utils.PageMenu(msg.channel, msg.author.id, 30000, Utils.Emojis.arrows, {
         data  : data,
         trash : true,
         jump  : true,

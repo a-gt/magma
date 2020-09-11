@@ -29,20 +29,15 @@ const parseMessage = async (msg, command, argsArray) => {
   const hasPerms = perm.check(member);
 
   if (hasPerms) {
-    if (argsArray.length > cmdArgs.length) {
-      return msg.channel.send({
-        embed : {
-          title       : `${Utils.Emojis.invalid} Invalid Arguments passed into "${command.name.toProperCase()}"`,
-          description : `**Too many arguments passed. Only needed ${cmdArgs.length} arguments.**`,
-          color       : Utils.Colors.red,
-        },
-      });
-    }
     await Promise.all(
       cmdArgs.map(async (arg, index) => {
         let equivalent = argsArray[index];
         // Set up type
         let valid = await isType(arg, equivalent, msg);
+        // Last arg
+        if (index === cmdArgs.length - 1) {
+          valid = await isType(arg, argsArray.slice(index, args.length).join(' '), msg);
+        }
         // Missing Arguments
         if (!equivalent && arg.required) {
           invalids.push(undefined);
