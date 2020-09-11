@@ -1,4 +1,4 @@
-![Magma Banner](https://i.imgur.com/so6y7JS.png)
+![Magma Banner](https://i.imgur.com/4RNBh49.png)
 # Magma - The best discord bot.
 **Work in Progress**
 
@@ -9,7 +9,6 @@ Magma is a fun and unique general purpose bot that has loads of features includi
 + Bot
     + help/commands (***Command***)
 + Fun
-    + ascii <**Text To Asciify**>
     + pi/π (***Digit Of Pi***)
 + Leveling
     + leaderboard/lb
@@ -22,5 +21,3 @@ Magma is a fun and unique general purpose bot that has loads of features includi
     + who-is/user-info/who (***Random Friend***)
     + youtube/video/yt <**Search**>
 </details>
-
-> Used to be called Prometheus.
