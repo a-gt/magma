@@ -10,7 +10,7 @@ module.exports = class Command {
     category = {
       fancy_name : 'General',
       thumbnail  : 'https://i.imgur.com/OfVMmTm.png',
-      group      : 'public',
+      permission : 'user',
       name       : 'general',
       emoji      : '<:info:750110959548498041>',
     },
@@ -22,7 +22,7 @@ module.exports = class Command {
       aliases = new Array(),
       permissions = {
         bot  : new Array(),
-        user : 'public',
+        user : category.permission,
       },
       args = new Array(),
       cooldown = 6,

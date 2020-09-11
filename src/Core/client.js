@@ -9,7 +9,13 @@ class Magma extends Discord.Client {
       'aliases',
     ].forEach(el => (this[el] = new Discord.Collection()));
 
-    this.groups = options[0].groups;
+    const permissions = {};
+
+    Config.permissions.forEach(perm => {
+      permissions[perm.dev] = perm;
+    });
+
+    this.permissionLevels = permissions;
   }
 
   getCommand (name) {

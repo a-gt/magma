@@ -64,7 +64,13 @@ module.exports = msg => {
       runCommand(msg, cmd, _args);
     },
     timeLeft => {
-      return msg.reply(`Please wait ${timeLeft.toFixed(1)} more second(s) before reusing the \`${cmd.name}\` cmd.`);
+      return msg.channel.send({
+        embed : {
+          title       : `${Utils.Emojis.unavailable} Please wait for the cooldown of "${cmd.name.toProperCase()}" to finish.`,
+          description : `**Please wait ${timeLeft.toFixed(1)} more second(s) before reusing the \`${cmd.name.toProperCase()}\` command.**`,
+          color       : Utils.Colors.red,
+        },
+      });
     },
   );
 };

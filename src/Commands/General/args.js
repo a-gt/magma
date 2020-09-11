@@ -7,7 +7,7 @@ module.exports = class extends Command {
       ],
       hidden      : true,
       permissions : {
-        user : 'owner',
+        user : 'dev',
       },
       args        : [
         {

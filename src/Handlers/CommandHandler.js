@@ -1,4 +1,5 @@
 const { typeFancyName, isType } = require('./Arguments');
+const Sentry = require('@sentry/node');
 
 const run = (msg, args, command) => {
   // Handle error
@@ -13,6 +14,8 @@ const run = (msg, args, command) => {
       },
     });
     console.error(error);
+
+    if (Config.env.NODE_ENV === 'production') Sentry.captureException(error);
   }
 };
 
@@ -21,10 +24,10 @@ const parseMessage = async (msg, command, argsArray) => {
   const args = {};
   const invalids = [];
   const member = msg.guild.member(msg.author);
+  const perm = msg.client.permissionLevels[command.permissions.user];
   // Check perms
-  const hasPerms =
-    msg.client.groups.hasOwnProperty(command.permissions.user) ? msg.client.groups[command.permissions.user](member) :
-    true;
+  const hasPerms = perm.check(member);
+
   if (hasPerms) {
     if (argsArray.length > cmdArgs.length) {
       return msg.channel.send({
@@ -89,12 +92,11 @@ const parseMessage = async (msg, command, argsArray) => {
     }
   }
   else {
-    const owner = msg.client.users.cache.get(msg.guild.ownerID);
     msg.channel.send({
       embed : {
         title       : `${Utils.Emojis
           .unavailable} You have insufficient permissions to run "${command.name.toProperCase()}"`,
-        description : `If you believe this is incorrect contact the server owner, **${owner.tag}**.`,
+        description : `You need to be a **${perm.name}**`,
         color       : Utils.Colors.red,
       },
     });

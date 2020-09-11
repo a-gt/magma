@@ -4,7 +4,7 @@ module.exports = class extends Command {
       name        : 'error',
       hidden      : true,
       permissions : {
-        user : 'owner',
+        user : 'dev',
       },
     });
   }

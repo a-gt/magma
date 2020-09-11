@@ -2,3 +2,4 @@ name: moderation
 fancy_name: 'Moderation'
 thumbnail: 'https://i.imgur.com/OfVMmTm.png'
 emoji: '🔨'
+description: 'Commands to punish the mere mortals.'

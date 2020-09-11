@@ -26,7 +26,7 @@ module.exports = class extends Command {
       categoryArray
         .map(
           (category, index) =>
-            `**Page ${index + 2}:** ${category.emoji} *${category.fancy_name}* **-** ${category.description || 'No description provided.'}`,
+            `**Page ${index + 2}:** ${category.emoji} *${category.fancy_name}* **-** ${category.description}`,
         )
         .join('\n');
     let data = [
@@ -45,7 +45,7 @@ module.exports = class extends Command {
     ];
     categoryArray.map(category => {
       const fields = [];
-
+      
       category.commands.map((_command, i) => {
         const command = commands.get(_command);
         if (command.hidden) return;
