@@ -59,6 +59,7 @@ const boot = async () => {
               name        : 'general',
               description : 'No description provided.',
               emoji       : '<:info:750110959548498041>',
+              index       : 1,
               ...category,
             });
             if (cmd.enabled) {
@@ -84,6 +85,7 @@ const boot = async () => {
         name        : 'general',
         description : 'No description provided.',
         emoji       : '<:info:750110959548498041>',
+        index       : 1,
         ...category,
         commands,
       });

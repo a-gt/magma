@@ -21,12 +21,12 @@ module.exports = class extends Command {
       ...text,
     ]
       .map(char => {
-        if (!Utils.Emojis[char]) {
-          return char + String.fromCharCode(8203);
+        if (!Utils.Emojis[char.toLowerCase()]) {
+          return char;
         }
-        else return Utils.Emojis[char] + String.fromCharCode(8203);
+        else return Utils.Emojis[char.toLowerCase()];
       })
-      .join('');
+      .join(String.fromCharCode(8203));
     msg.channel.send(big);
   }
 };

@@ -42,13 +42,11 @@ class PageMenu {
     this.emojis = Object.keys(emojis);
     this.emojiFuncs = emojis;
     const extras = [];
-    if (trash || jump) {
-      if (jump) {
-        extras.push(Utils.Emojis.jump);
-      }
-      if (trash) {
-        extras.push(Utils.Emojis.trash);
-      }
+    if (jump) {
+      extras.push(Utils.Emojis.jump);
+    }
+    if (trash) {
+      extras.push(Utils.Emojis.trash);
     }
     this.allEmojis = [
       this.pageEmojis[0],
@@ -146,14 +144,31 @@ class PageMenu {
   }
 
   async deleteReaction () {
-    const user = this.userId;
-    const userReactions = this.message.reactions.cache.filter(reactionUser => reactionUser.users.cache.has(user));
-    try {
-      for (const reactionEmoji of userReactions.values()) {
-        await reactionEmoji.users.remove(user);
+    if (this.message.guild) {
+      const user = this.userId;
+      const userReactions = this.message.reactions.cache.filter(reactionUser => reactionUser.users.cache.has(user));
+      try {
+        for (const reactionEmoji of userReactions.values()) {
+          await reactionEmoji.users.remove(user);
+        }
+      } catch (e) {
+        return this.error(e);
       }
-    } catch {
-      return;
+    }
+    else {
+      this.message
+        .delete({
+          timeout : 0,
+          reson   : 'Free up clutter',
+        })
+        .catch(() => {
+          return;
+        });
+      this.channel.send(this.parsedData[this.page]).then(message => {
+        this.message = message;
+        this.allEmojis.forEach(emoji => message.react(emoji));
+        this.reaction();
+      });
     }
   }
 
@@ -168,9 +183,15 @@ class PageMenu {
       if (page > this.data.length - 1) page = this.data.length - 1;
     }
     this.page = page;
-    this.message.edit(this.parsedData[this.page]);
-    this.events.emit('changePage', page);
-    this.deleteReaction();
+    if (this.message.guild) {
+      this.message.edit(this.parsedData[this.page]);
+      this.events.emit('changePage', page);
+      this.deleteReaction();
+    }
+    else {
+      this.events.emit('changePage', page);
+      this.deleteReaction();
+    }
   }
 
   forward () {
@@ -199,7 +220,7 @@ class PageMenu {
       .then(collected => {
         const reaction = collected.first();
         const pageEmojis = this.pageEmojis;
-        if (!reaction) this.end(message, collected);
+        if (!reaction) return this.end(message, collected);
         const name = reaction.emoji.name || reaction.emoji.id;
 
         if (pageEmojis.includes(name)) {
@@ -239,23 +260,16 @@ class PageMenu {
                 .then(collected => {
                   const num = parseInt(collected.first().content, 10);
                   if (num > this.data.length) {
-                    collected
-                      .first()
-                      .delete({
+                    if (message.guild) {
+                      collected.first().delete({
                         timeout : 0,
                         reason  : '',
-                      })
-                      .catch(() => {
-                        return;
                       });
-                    sent
-                      .delete({
-                        timeout : 0,
-                        reason  : '',
-                      })
-                      .catch(() => {
-                        return;
-                      });
+                    }
+                    sent.delete({
+                      timeout : 0,
+                      reason  : '',
+                    });
                     return message.channel.send(`That is greater than ${this.data.length}.`).then(sentError =>
                       sentError
                         .delete({
@@ -268,15 +282,12 @@ class PageMenu {
                     );
                   }
                   this.changePage(num - 1);
-                  collected
-                    .first()
-                    .delete({
+                  if (message.guild) {
+                    collected.first().delete({
                       timeout : 0,
                       reason  : '',
-                    })
-                    .catch(() => {
-                      return;
                     });
+                  }
                   sent
                     .delete({
                       timeout : 0,

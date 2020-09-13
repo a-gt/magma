@@ -19,7 +19,7 @@ module.exports = class extends Command {
   run (msg, args) {
     const prefix = '?';
     const { commands, categories } = this.client;
-    const categoryArray = categories.array();
+    const categoryArray = categories.array().sort((a, b) => a.index - b.index);
     // Set up paginated embed
     const categoryNames =
       '**Page 1:** *Magma Help*\n' +

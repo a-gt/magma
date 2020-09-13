@@ -23,10 +23,13 @@ const parseMessage = async (msg, command, argsArray) => {
   const cmdArgs = command.args;
   const args = {};
   const invalids = [];
-  const member = msg.guild.member(msg.author);
-  const perm = msg.client.permissionLevels[command.permissions.user];
-  // Check perms
-  const hasPerms = perm.check(member);
+  let hasPerms = true;
+  if (msg.guild) {
+    const member = msg.guild.member(msg.author);
+    const perm = msg.client.permissionLevels[command.permissions.user];
+    // Check perms
+    hasPerms = perm.check(member);
+  }
 
   if (hasPerms) {
     await Promise.all(
@@ -99,10 +102,11 @@ const parseMessage = async (msg, command, argsArray) => {
 };
 
 const runCommand = (msg, command, args) => {
-  if (msg.channel.type !== 'text') return;
-  msg.delete({ timeout: 0, reason: '' }).catch(() => {
-    return;
-  });
+  if (msg.guild) {
+    msg.delete({ timeout: 0, reason: '' }).catch(() => {
+      return;
+    });
+  }
   if (command.commands.size > 0) {
     const subCommand = command.getSub(args[0]);
     if (subCommand) {

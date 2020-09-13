@@ -32,6 +32,7 @@ module.exports = class Command {
   ) {
     this.client = client;
     this.category = category;
+    // I know this is bad code but deal with it.
     const config = {
       name,
       description,
@@ -47,6 +48,8 @@ module.exports = class Command {
     for (const key in config) {
       this[key] = config[key];
     }
+    // TODO: Fix bad code.
+    // End of bad code.
     this.args.forEach((arg, i) => {
       if (arg.name === undefined) this.args[i].name = arg.key;
     });
