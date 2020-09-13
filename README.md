@@ -14,5 +14,8 @@
     - Ban.
     - ✔ Clear.
     - Warn.
+- Guild Settings
+    - Prefix
+    - Language
 ---
 Copyright (c) 2020 ApexioDaCoder
