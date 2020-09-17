@@ -1,4 +1,4 @@
 module.exports = {
-  Client : require('./Client'),
-  Command : require('./Base/Command')
+  Client  : require('./Client'),
+  Command : require('./Base/Command'),
 };

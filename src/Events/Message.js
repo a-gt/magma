@@ -1,4 +1,4 @@
-const Cooldown = require('../Utils/Cooldown');
+const Cooldown = require('../Utils/Classes/Cooldown');
 const runCommand = require('../Handlers/CommandHandler');
 
 const escapeRegex = str => str.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
@@ -8,6 +8,18 @@ module.exports = msg => {
   if (msg.author.bot) return;
   let args;
   if (msg.guild) {
+    const user = new client.database.managers.UserDB(msg.author.id.toString());
+    new Cooldown(
+      'xp-cooldown',
+      msg.author,
+      60,
+      async () => {
+        await user.incrementLeveling(msg);
+      },
+      () => {
+        return;
+      },
+    );
     const prefixRegex = new RegExp(`^(<@!?${client.user.id}>|${escapeRegex('?')})\\s*`);
     if (!prefixRegex.test(msg.content)) return;
 
@@ -23,16 +35,7 @@ module.exports = msg => {
   let commandName = args.shift().toLowerCase();
   let cmd = client.getCommand(commandName);
 
-  if (!cmd) {
-    const firstArg = args.shift();
-    if (!firstArg) return;
-    commandName = firstArg.toLowerCase();
-    const cmdTest = client.getCommand(commandName);
-    if (cmdTest) {
-      cmd = cmdTest;
-    }
-    else return;
-  }
+  if (!cmd) return;
 
   const quotes = args.join(' ').split(/"/g);
 
@@ -46,13 +49,12 @@ module.exports = msg => {
     else {
       const splitText = text.split(/\ +/);
       splitText.forEach(_text => {
-        if (_text === '') return;
         _args.push(_text);
       });
     }
   });
 
-  if (cmd.guildOnly && msg.guild) {
+  if (cmd.guildOnly && !msg.guild) {
     return;
   }
 
@@ -66,12 +68,12 @@ module.exports = msg => {
     timeLeft => {
       return msg.channel.send({
         embed : {
-          title       : `${Utils.Emojis
+          title       : `${Utils.emojis
             .unavailable} Please wait for the cooldown of "${cmd.name.toProperCase()}" to finish.`,
           description : `**Please wait ${timeLeft.toFixed(
             1,
           )} more second(s) before reusing the \`${cmd.name.toProperCase()}\` command.**`,
-          color       : Utils.Colors.red,
+          color       : Utils.colors.red,
         },
       });
     },

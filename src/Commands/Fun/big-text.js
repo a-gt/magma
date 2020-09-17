@@ -21,10 +21,10 @@ module.exports = class extends Command {
       ...text,
     ]
       .map(char => {
-        if (!Utils.Emojis[char.toLowerCase()]) {
+        if (!Utils.emojis[char.toLowerCase()]) {
           return char;
         }
-        else return Utils.Emojis[char.toLowerCase()];
+        else return Utils.emojis[char.toLowerCase()];
       })
       .join(String.fromCharCode(8203));
     msg.channel.send(big);

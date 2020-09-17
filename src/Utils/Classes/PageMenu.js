@@ -5,7 +5,7 @@ class PageMenu {
     channel,
     userId,
     time,
-    pageEmojis = Utils.Emojis.arrows,
+    pageEmojis = Utils.emojis.arrows,
     {
       data = [],
       start = 1,
@@ -43,10 +43,10 @@ class PageMenu {
     this.emojiFuncs = emojis;
     const extras = [];
     if (jump) {
-      extras.push(Utils.Emojis.jump);
+      extras.push(Utils.emojis.jump);
     }
     if (trash) {
-      extras.push(Utils.Emojis.trash);
+      extras.push(Utils.emojis.trash);
     }
     this.allEmojis = [
       this.pageEmojis[0],
@@ -231,7 +231,7 @@ class PageMenu {
             this.forward();
           }
         }
-        else if (name === Utils.Emojis.trash) {
+        else if (name === Utils.emojis.trash) {
           if (this.trash) {
             message
               .delete({
@@ -243,7 +243,7 @@ class PageMenu {
               });
           }
         }
-        else if (name === Utils.Emojis.jump) {
+        else if (name === Utils.emojis.jump) {
           if (this.jump) {
             const filter = response => {
               return !isNaN(parseInt(response, 10));

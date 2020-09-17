@@ -23,7 +23,7 @@ module.exports = class extends Command {
   run (msg, args) {
     let amount = args.num;
     if (amount < 2) {
-      return msg.channel.send(Utils.Emojis.unavailable + '**You need to input a number between 2 and 100.**');
+      return msg.channel.send(Utils.emojis.unavailable + '**You need to input a number between 2 and 100.**');
     }
     if (amount > 100) amount = 100;
     msg.channel
@@ -44,7 +44,7 @@ module.exports = class extends Command {
           });
       })
       .catch(err => {
-        msg.channel.send(Utils.Emojis.error +'There was an error trying to clear messages in this channel!');
+        msg.channel.send(Utils.emojis.error + 'There was an error trying to clear messages in this channel!');
         throw err;
       });
   }

@@ -1,4 +1,6 @@
 name: leveling
 fancy_name: 'Leveling'
-description: 'Send messages to level up and get xp.'
+description: 'Send messages to level up and get **XP**.'
+emoji: ':medal:'
+thumbnail: 'https://i.imgur.com/qnx3gZG.png'
 index: 2

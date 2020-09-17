@@ -8,9 +8,9 @@ const run = (msg, args, command) => {
   } catch (error) {
     msg.channel.send({
       embed : {
-        title       : `${Utils.Emojis.error} Error while running command "${command.name.toProperCase()}"`,
+        title       : `${Utils.emojis.error} Error while running command "${command.name.toProperCase()}"`,
         description : `If this continues please contact **Magma Support**.`,
-        color       : Utils.Colors.red,
+        color       : Utils.colors.red,
       },
     });
     console.error(error);
@@ -79,9 +79,9 @@ const parseMessage = async (msg, command, argsArray) => {
       );
       msg.channel.send({
         embed : {
-          title       : `${Utils.Emojis.invalid} Invalid Arguments passed into "${command.name.toProperCase()}"`,
+          title       : `${Utils.emojis.invalid} Invalid Arguments passed into "${command.name.toProperCase()}"`,
           description : `**Here are your errors:**\n${errors.join('\n')}`,
-          color       : Utils.Colors.red,
+          color       : Utils.colors.red,
         },
       });
     }
@@ -92,10 +92,10 @@ const parseMessage = async (msg, command, argsArray) => {
   else {
     msg.channel.send({
       embed : {
-        title       : `${Utils.Emojis
+        title       : `${Utils.emojis
           .unavailable} You have insufficient permissions to run "${command.name.toProperCase()}"`,
         description : `You need to be a **${perm.name}**`,
-        color       : Utils.Colors.red,
+        color       : Utils.colors.red,
       },
     });
   }
@@ -108,7 +108,7 @@ const runCommand = (msg, command, args) => {
     });
   }
   if (command.commands.size > 0) {
-    const subCommand = command.getSub(args[0]);
+    const subCommand = command.getSub(args[0] || '');
     if (subCommand) {
       args.shift();
       return parseMessage(msg, subCommand, args);

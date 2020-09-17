@@ -36,7 +36,7 @@ module.exports = class extends Command {
           icon_url :
             'https://cdn.discordapp.com/avatars/735320616453800017/2e9f19b18cf555db194df3c168047e0c.png?size=512',
         },
-        color       : Utils.Colors.embed,
+        color       : Utils.colors.embed,
         thumbnail   : {
           url : 'https://cdn.discordapp.com/avatars/735320616453800017/2e9f19b18cf555db194df3c168047e0c.png?size=512',
         },
@@ -75,7 +75,7 @@ module.exports = class extends Command {
     });
     if (!args.command) {
       // Send all commands
-      new Utils.PageMenu(msg.channel, msg.author.id, 30000, Utils.Emojis.arrows, {
+      new Utils.PageMenu(msg.channel, msg.author.id, 30000, Utils.emojis.arrows, {
         data  : data,
         trash : true,
         jump  : true,
@@ -94,12 +94,12 @@ module.exports = class extends Command {
     if (!command) {
       // Check if its a category
       const category = categories.get(name);
-      if (!category) return msg.channel.send(`${Utils.Emojis.unavailable} **That's not a valid command or category.**`);
+      if (!category) return msg.channel.send(`${Utils.emojis.unavailable} **That's not a valid command or category.**`);
       let num = 0;
       categoryArray.forEach((_category, i) => {
         if (_category.name === category.name) num = i + 2;
       });
-      new Utils.PageMenu(msg.channel, msg.author.id, 30000, Utils.Emojis.arrows, {
+      new Utils.PageMenu(msg.channel, msg.author.id, 30000, Utils.emojis.arrows, {
         data  : data,
         trash : true,
         jump  : true,

@@ -3,11 +3,11 @@
 **Work in Progress**
 
 # Planned Features
-- Leveling System
-    - Store data in MongoDB Database.
-    - Have leaderboard.
-    - 15 - 25 XP per message with a cooldown.
-    - Have images for checking XP.
+- ✔ Leveling System
+    - ✔ Store data in MongoDB Database.
+    - ✔ Have leaderboard.
+    - ✔ 15 - 25 XP per message with a cooldown.
+    - ✔ Be able to check XP.
 - Moderation System
     - Have moderation logs.
     - Kick.

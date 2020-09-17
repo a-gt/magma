@@ -8,9 +8,9 @@ global.Config = require('./Config');
 const Magma = require('./Core');
 global.Command = Magma.Command;
 
-require('./Utils/Prototypes')();
-require('./Utils/Console')();
-require('./Utils/Sentry')();
+require('./Utils/Functions/Prototypes')();
+require('./Utils/Functions/Console')();
+require('./Utils/Functions/Sentry')();
 
 const path = require('path');
 const chalk = require('chalk');
@@ -19,6 +19,8 @@ const fs = require('fs');
 const yaml = require('yaml');
 const _ = require('lodash');
 const onMessage = require('./Events/Message');
+const database = require('./Database');
+const Canvas = require('canvas');
 
 const client = new Magma.Client({
   disableEvents : [
@@ -97,7 +99,19 @@ const boot = async () => {
     }),
   );
   console.bootLog(chalk.yellow('Finished loading commands.'));
+  Canvas.registerFont(process.cwd() + '/src/Assets/Fonts/manrope-regular.ttf', {
+    family : 'Manrope',
+    weight : 'regular',
+    style  : 'normal',
+  });
+  Canvas.registerFont(process.cwd() + '/src/Assets/Fonts/manrope-bold.ttf', {
+    family : 'Manrope',
+    weight : 'bold',
+    style  : 'normal',
+  });
+  await database.setup();
   client.login(Config.bot.token).catch(error => console.error(error));
+  client.database = database;
 };
 
 boot();

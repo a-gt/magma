@@ -25,7 +25,7 @@ module.exports = class extends Command {
 
     msg.channel.send({
       embed : {
-        color       : Utils.Colors.embed,
+        color       : Utils.colors.embed,
         title       : 'Args Info',
         description : `\`\`\`Arguments: ${args.args}\nArguments length: ${args.args.length}\`\`\``,
       },
