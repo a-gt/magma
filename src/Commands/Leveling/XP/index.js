@@ -24,14 +24,16 @@ module.exports = class extends Command {
     msg.channel.startTyping();
     const person = args.user || msg.author;
     if (person.bot) {
-      return msg.channel.send(
-        `${Utils.emojis.error} ${person} is a **bot!** They don't get to be in the topnotch **XP Club**.`,
-      );
+      return msg.channel
+        .send(`${Utils.emojis.error} ${person} is a **bot!** They don't get to be in the topnotch **XP Club**.`)
+        .then(() => msg.channel.stopTyping());
     }
     const manager = new this.client.database.managers.UserDB(person.id.toString());
     const score = await manager.fetchLevelingData(msg.guild.id.toString());
     if (score === undefined) {
-      return msg.channel.send(`${Utils.emojis.error} **${person.username}** is not ranked yet...`);
+      return msg.channel
+        .send(`${Utils.emojis.error} **${person.username}** is not ranked yet...`)
+        .then(() => msg.channel.stopTyping());
     }
     // Create Canvas
     const { rank, lvl, goal, xp } = score;
