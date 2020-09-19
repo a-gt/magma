@@ -29,7 +29,8 @@ const client = new Magma.Client({
 });
 
 const boot = async () => {
-  console.bootLog(`Starting ${chalk.red('Magma')} on ${process.env.NODE_ENV} environment.`);
+  console.bootLog(chalk.cyanBright(`--------------------[${chalk.red('Magma')}]--------------------`));
+  console.bootLog(`Starting ${chalk.red('Magma')} on ${chalk.cyanBright(process.env.NODE_ENV)} environment.`);
   console.bootLog(`Made by ${chalk.blueBright('ApexioDaCoder')}!`);
   console.bootLog(chalk.yellow('Loading commands from src/Commands...'));
   const dirs = fs.readdirSync(__dirname + '/Commands');

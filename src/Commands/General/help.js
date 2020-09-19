@@ -46,13 +46,24 @@ module.exports = class extends Command {
     categoryArray.map(category => {
       const fields = [];
 
-      category.commands.map((_command, i) => {
+      category.commands.map(_command => {
         const command = commands.get(_command);
         if (command.hidden) return;
         fields.push({
-          name  : `${i + 1}. ${prefix}${command.usage}`,
+          name  : `${fields.length + 1}. ${prefix}${command.usage}`,
           value : `\`\`\`${command.description}\`\`\``,
         });
+        if (command.hasSubs) {
+          command.commands.forEach(sub => {
+            if (sub.hidden) return;
+            fields.push({
+              name  : `${fields.length + 1}. ${prefix}${command.name}${
+                command.aliases[0] === undefined ? '' :
+                `/${command.aliases.join('/')}`} ${sub.usage}`,
+              value : `\`\`\`${sub.description}\`\`\``,
+            });
+          });
+        }
       });
       if (fields.length === 0) {
         fields.push({

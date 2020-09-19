@@ -21,4 +21,4 @@ module.exports.managers = {};
 module.exports.managers.GuildDB = require('./Managers/GuildDB');
 module.exports.managers.UserDB = require('./Managers/UserDB');
 
-mongoose.connection.once('open', () => console.log(chalk.blueBright('Succesfully connected to database.')));
+mongoose.connection.once('open', () => console.bootLog(chalk.blueBright('Succesfully connected to database.')));

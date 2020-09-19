@@ -2,7 +2,7 @@ module.exports = class extends Command {
   constructor (...options) {
     super(...options, {
       name        : 'set',
-      description : "Set people's **XP**",
+      description : "Set people's XP.",
       args        : [
         {
           key      : 'user',

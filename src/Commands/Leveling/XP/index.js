@@ -9,7 +9,7 @@ module.exports = class extends Command {
       aliases     : [
         'level',
       ],
-      description : 'See how much **XP** you have.',
+      description : 'See how much XP you have.',
       args        : [
         {
           key  : 'user',
@@ -24,22 +24,22 @@ module.exports = class extends Command {
     msg.channel.startTyping();
     const person = args.user || msg.author;
     if (person.bot) {
-      return msg.channel
-        .send(`${Utils.emojis.error} ${person} is a **bot!** They don't get to be in the topnotch **XP Club**.`)
-        .then(() => msg.channel.stopTyping());
+      msg.channel.send(
+        `${Utils.emojis.error} ${person} is a **bot!** They don't get to be in the topnotch **XP Club**.`,
+      );
+      return msg.channel.stopTyping();
     }
     const manager = new this.client.database.managers.UserDB(person.id.toString());
     const score = await manager.fetchLevelingData(msg.guild.id.toString());
     if (score === undefined) {
-      return msg.channel
-        .send(`${Utils.emojis.error} **${person.username}** is not ranked yet...`)
-        .then(() => msg.channel.stopTyping());
+      msg.channel.send(`${Utils.emojis.error} **${person.username}** is not ranked yet...`);
+      return msg.channel.stopTyping();
     }
     // Create Canvas
-    const { rank, lvl, goal, xp } = score;
+    const { rank, lvl, goal, xp, background } = score;
     const canvas = Canvas.createCanvas(800, 243);
     const ctx = canvas.getContext('2d');
-    // Rounded Rectangle
+    // Functions
     function roundedRect (x, y, w, h, tl, tr, br, bl, color) {
       const r = x + w,
         b = y + h;
@@ -56,6 +56,14 @@ module.exports = class extends Command {
       ctx.fillStyle = color;
       ctx.fill();
     }
+    function drawImageScaled (img) {
+      const hRatio = canvas.width / img.width;
+      const vRatio = canvas.height / img.height;
+      const ratio = Math.min(hRatio, vRatio);
+      const centerShift_y = (canvas.height - img.height * ratio) / 2;
+      ctx.clearRect(0, 0, canvas.width, canvas.height);
+      ctx.drawImage(img, 0, 0, canvas.width, img.height, 0, centerShift_y, canvas.width, img.height * ratio);
+    }
     // Vars
     const avatar = await Canvas.loadImage(
       person.displayAvatarURL({
@@ -63,14 +71,29 @@ module.exports = class extends Command {
       }),
     );
     const medal = await Canvas.loadImage(process.cwd() + '/src/Assets/Images/Medal.png');
+    const bg = await Canvas.loadImage(background);
     const xpString = xp.abbreviate();
     const goalString = goal.abbreviate();
     const percent = xp / goal;
     // Background
-    roundedRect(0, 0, 800, 243, 5, 5, 5, 5, '#2F3136');
-    ctx.shadowBlur = 20;
-    ctx.shadowColor = '#2D2D32';
-    roundedRect(35, 25, 730, 190, 5, 5, 5, 5, '#36393F');
+    roundedRect(0, 0, 800, 243, 5, 5, 5, 5, 'rgb(0, 0, 0)');
+    const r = 0 + 800,
+      b = 0 + 243;
+    ctx.beginPath();
+    ctx.moveTo(0 + 5, 0);
+    ctx.lineTo(r - 5, 0);
+    ctx.quadraticCurveTo(r, 0, r, 0 + 5);
+    ctx.lineTo(r, b - 5);
+    ctx.quadraticCurveTo(r, b, r - 5, b);
+    ctx.lineTo(0 + 5, b);
+    ctx.quadraticCurveTo(0, b, 0, b - 5);
+    ctx.lineTo(0, 0 + 5);
+    ctx.quadraticCurveTo(0, 0, 0 + 5, 0);
+    ctx.closePath();
+    ctx.clip();
+    drawImageScaled(bg);
+    // Inner Background
+    roundedRect(35, 25, 730, 190, 5, 5, 5, 5, 'rgba(0, 0, 0, 0.6)');
     // Avatar
     const img = person.displayAvatarURL({
       format : 'png',
