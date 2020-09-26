@@ -29,9 +29,9 @@ module.exports = class extends Command {
   }
 
   async run (msg, { user, xpset }) {
-    if (xpset > 10000000) {
+    if (xpset >= Number.MAX_SAFE_INTEGER) {
       return msg.channel.send(
-        `${Utils.emojis.error} **${xpset.abreviate()}** is too high. Please choose something lower.`,
+        `${Utils.emojis.error} That is too high. Please choose something lower.`,
       );
     }
     // Set XP

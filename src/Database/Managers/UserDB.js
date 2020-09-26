@@ -66,6 +66,9 @@ module.exports = class {
     guildData.messages++;
     const leveling = guildData.leveling;
     leveling.xp += add;
+    if (leveling.xp >= Number.MAX_SAFE_INTEGER) {
+      return;
+    }
     const lvl = Math.floor(0.1 * Math.sqrt(leveling.xp));
     const XP = leveling.xp - 100 * lvl * lvl;
     const goal = 100 * (lvl + 1) * (lvl + 1) - 100 * lvl * lvl;
