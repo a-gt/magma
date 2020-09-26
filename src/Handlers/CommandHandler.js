@@ -94,7 +94,7 @@ const parseMessage = async (msg, command, argsArray) => {
       embed : {
         title       : `${Utils.emojis
           .unavailable} You have insufficient permissions to run "${command.name.toProperCase()}"`,
-        description : `You need to be a **${perm.name}**`,
+        description : `You need to be a **${msg.client.permissionLevels[command.permissions.user].name}**`,
         color       : Utils.colors.red,
       },
     });

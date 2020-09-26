@@ -29,13 +29,15 @@ const config = {
       name  : 'Moderator',
       dev   : 'mod',
       check : member => {
-        return member.hasPermission(
-          [
-            'KICK_MEMBERS',
-            'BAN_MEMBERS',
-            'MANAGE_MESSAGES',
-          ],
-          { checkAdmin: true, checkOwner: true },
+        return (
+          member.hasPermission(
+            [
+              'KICK_MEMBERS',
+              'BAN_MEMBERS',
+              'MANAGE_MESSAGES',
+            ],
+            { checkAdmin: true, checkOwner: true },
+          ) || config.developers.includes(member.id.toString())
         );
       },
     },
@@ -43,11 +45,13 @@ const config = {
       name  : 'Administrator',
       dev   : 'admin',
       check : member => {
-        return member.hasPermission(
-          [
-            'ADMINISTRATOR',
-          ],
-          { checkAdmin: true, checkOwner: true },
+        return (
+          member.hasPermission(
+            [
+              'ADMINISTRATOR',
+            ],
+            { checkAdmin: true, checkOwner: true },
+          ) || config.developers.includes(member.id.toString())
         );
       },
     },
@@ -55,11 +59,13 @@ const config = {
       name  : 'Server Owner',
       dev   : 'server_owner',
       check : member => {
-        return member.hasPermission(
-          [
-            'ADMINISTRATOR',
-          ],
-          { checkAdmin: true, checkOwner: true },
+        return (
+          member.hasPermission(
+            [
+              'ADMINISTRATOR',
+            ],
+            { checkAdmin: true, checkOwner: true },
+          ) || config.developers.includes(member.id.toString())
         );
       },
     },

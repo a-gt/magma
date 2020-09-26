@@ -22,7 +22,7 @@ module.exports = class Command {
       aliases = new Array(),
       permissions = {
         bot  : new Array(),
-        user : category.permission,
+        user : null,
       },
       args = new Array(),
       cooldown = 6,
@@ -47,6 +47,9 @@ module.exports = class Command {
     };
     for (const key in config) {
       this[key] = config[key];
+    }
+    if (permissions.user === null) {
+      this.permissions.user = category.pemission || 'user';
     }
     // TODO: Fix bad code.
     // End of bad code.

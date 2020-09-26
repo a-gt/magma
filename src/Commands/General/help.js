@@ -19,7 +19,16 @@ module.exports = class extends Command {
   run (msg, args) {
     const prefix = '?';
     const { commands, categories } = this.client;
-    const categoryArray = categories.array().sort((a, b) => a.index - b.index);
+    const categoryArray = categories.array().sort((a, b) => a.index - b.index).filter(category => {
+      let hasPerms = true;
+      if (msg.guild) {
+        const member = msg.guild.member(msg.author);
+        const perm = msg.client.permissionLevels[category.permission];
+        // Check perms
+        hasPerms = perm.check(member);
+      }
+      return hasPerms;
+    });
     // Set up paginated embed
     const categoryNames =
       '**Page 1:** *Magma Help*\n' +
@@ -46,25 +55,36 @@ module.exports = class extends Command {
     categoryArray.map(category => {
       const fields = [];
 
-      category.commands.map(_command => {
-        const command = commands.get(_command);
-        if (command.hidden) return;
-        fields.push({
-          name  : `${fields.length + 1}. ${prefix}${command.usage}`,
-          value : `\`\`\`${command.description}\`\`\``,
-        });
-        if (command.hasSubs) {
-          command.commands.forEach(sub => {
-            if (sub.hidden) return;
-            fields.push({
-              name  : `${fields.length + 1}. ${prefix}${command.name}${
-                command.aliases[0] === undefined ? '' :
-                `/${command.aliases.join('/')}`} ${sub.usage}`,
-              value : `\`\`\`${sub.description}\`\`\``,
-            });
+      category.commands
+        .filter(_command => {
+          let hasPerms = true;
+          if (msg.guild) {
+            const member = msg.guild.member(msg.author);
+            const perm = msg.client.permissionLevels[this.client.getCommand(_command).permissions.user];
+            // Check perms
+            hasPerms = perm.check(member);
+          }
+          return hasPerms;
+        })
+        .map(_command => {
+          const command = commands.get(_command);
+          if (command.hidden) return;
+          fields.push({
+            name  : `${fields.length + 1}. ${prefix}${command.usage}`,
+            value : `\`\`\`${command.description}\`\`\``,
           });
-        }
-      });
+          if (command.hasSubs) {
+            command.commands.forEach(sub => {
+              if (sub.hidden) return;
+              fields.push({
+                name  : `${fields.length + 1}. ${prefix}${command.name}${
+                  command.aliases[0] === undefined ? '' :
+                  `/${command.aliases.join('/')}`} ${sub.usage}`,
+                value : `\`\`\`${sub.description}\`\`\``,
+              });
+            });
+          }
+        });
       if (fields.length === 0) {
         fields.push({
           name  : `No commands found for this category.`,
@@ -124,13 +144,24 @@ module.exports = class extends Command {
       return;
     }
     // Send command data
-
     const { category } = command;
     const _category = categories.get(category);
+
+    let hasPerms = true;
+    if (msg.guild) {
+      const member = msg.guild.member(msg.author);
+      const perm = msg.client.permissionLevels[command.permissions.user];
+      // Check perms
+      hasPerms = perm.check(member);
+    }
 
     data = {};
 
     data.title = `**${_.capitalize(command.name)} Command**  ➤  ${_category.fancy_name}`;
+    if (!hasPerms) {
+      data.description = `**Note: You do not have enough permissions to run this command. You need to be a ${msg.client
+        .permissionLevels[command.permissions.user].name}.**`;
+    }
     data.fields = [
       {
         name  : 'Command',
@@ -162,9 +193,9 @@ module.exports = class extends Command {
     if (command.commands.size > 0) {
       data.fields.push({
         name  : 'Sub Commands',
-        value : `**\`\`\`${command.subCommands
-          .map((cmd, i) => {
-            return `${i + 1}. ${prefix}${cmd.usage}\n  ⤷ ${cmd.description}`;
+        value : `**\`\`\`${command.commands
+          .map(cmd => {
+            return `${prefix}${command.name} ${cmd.usage}\n    ${cmd.description}`;
           })
           .join('\n\n')}\`\`\`**`,
       });
