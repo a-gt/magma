@@ -9,7 +9,7 @@ const run = (msg, args, command) => {
     msg.channel.send({
       embed : {
         title       : `${Utils.emojis.error} Error while running command "${command.name.toProperCase()}"`,
-        description : `If this continues please contact **Magma Support**.`,
+        description : `If this continues please contact **Apexio#0001**.`,
         color       : Utils.colors.red,
       },
     });

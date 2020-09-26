@@ -6,7 +6,9 @@
   "scripts": {
     "test": "pm2 start test.ecosystem.yaml && pm2 logs --raw",
     "start": "pm2 start prod.ecosystem.yaml && pm2 monit",
-    "stop": "pm2 kill"
+    "stop": "pm2 kill",
+    "restart": "npm stop && npm test",
+    "restart:prod": "npm stop && npm start"
   },
   "repository": {
     "type": "git",

@@ -67,7 +67,7 @@ const config = {
       name  : 'Magma Developer',
       dev   : 'dev',
       check : member => {
-        return this.developers.includes(member.id.toString());
+        return config.developers.includes(member.id.toString());
       },
     },
   ],

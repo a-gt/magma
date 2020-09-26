@@ -84,7 +84,7 @@ module.exports = class {
     }
     guildData.leveling = leveling;
     userData.guilds[guildIndex] = guildData;
-    this.set('guilds', userData.guilds);
+    return await this.set('guilds', userData.guilds);
   }
 
   async setXP (guildId, xp) {
@@ -98,7 +98,7 @@ module.exports = class {
     leveling.xp = xp;
     guildData.leveling = leveling;
     userData.guilds[guildIndex] = guildData;
-    this.set('guilds', userData.guilds);
+    return await this.set('guilds', userData.guilds);
   }
 
   async fetchLevelingData (guild) {
