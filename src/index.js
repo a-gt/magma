@@ -39,7 +39,18 @@ const boot = async () => {
       let loaded = 0,
         skipped = 0;
       const files = fs.readdirSync(path.resolve('src', 'commands', `${dir}`)).filter(file => !file.endsWith('.yml'));
-      const category = yaml.parse(fs.readFileSync(`${__dirname}/Commands/${dir}/category.yml`, 'utf8'));
+      const _category = yaml.parse(fs.readFileSync(`${__dirname}/Commands/${dir}/category.yml`, 'utf8'));
+      const category = {
+        fancy_name  : 'General',
+        thumbnail   : 'https://i.imgur.com/OfVMmTm.png',
+        permission  : 'user',
+        name        : 'general',
+        description : 'No description provided.',
+        emoji       : '<:info:750110959548498041>',
+        index       : 1,
+        hidden      : false,
+        ..._category,
+      };
       const commands = [];
       await Promise.all(
         files.map(async cmdFile => {
@@ -55,16 +66,7 @@ const boot = async () => {
             console.warn(`${chalk.cyanBright(cmdPath)} does not export anything.`);
           }
           else {
-            const cmd = new ImportedCmd(client, {
-              fancy_name  : 'General',
-              thumbnail   : 'https://i.imgur.com/OfVMmTm.png',
-              permission  : 'user',
-              name        : 'general',
-              description : 'No description provided.',
-              emoji       : '<:info:750110959548498041>',
-              index       : 1,
-              ...category,
-            });
+            const cmd = new ImportedCmd(client, category);
             if (cmd.enabled) {
               cmd._dir = _dir;
               cmd.hasSubs = hasSubs;
@@ -82,13 +84,6 @@ const boot = async () => {
         }),
       );
       client.categories.set(category.name || 'general', {
-        fancy_name  : 'General',
-        thumbnail   : 'https://i.imgur.com/OfVMmTm.png',
-        permission  : 'user',
-        name        : 'general',
-        description : 'No description provided.',
-        emoji       : '<:info:750110959548498041>',
-        index       : 1,
         ...category,
         commands,
       });

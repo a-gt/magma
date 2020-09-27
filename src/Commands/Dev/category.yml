@@ -1,0 +1,4 @@
+name: dev
+fancy_name: 'Dev'
+hidden: true
+permission: 'dev'

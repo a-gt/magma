@@ -19,7 +19,7 @@ module.exports = class extends Command {
   run (msg, args) {
     const prefix = '?';
     const { commands, categories } = this.client;
-    const categoryArray = categories.array().sort((a, b) => a.index - b.index);
+    const categoryArray = categories.array().sort((a, b) => a.index - b.index).filter(category => !category.hidden);
     // Set up paginated embed
     const categoryNames =
       '**Page 1:** *Magma Help*\n' +
@@ -106,7 +106,8 @@ module.exports = class extends Command {
           url : category.thumbnail,
         },
         description : `${category.description}\n${
-          !hasPerms ? `${Utils.emojis.unavailable} **You do not have enough permissions to run commands any in this category.**` :
+          !hasPerms ? `${Utils.emojis
+            .unavailable} **You do not have enough permissions to run commands any in this category.**` :
           ''}`,
         fields,
       });
@@ -129,10 +130,11 @@ module.exports = class extends Command {
     const command = this.client.getCommand(name);
 
     // Check if its a command
-    if (!command) {
+    if (!command || command.hidden) {
       // Check if its a category
       const category = categories.get(name);
-      if (!category) return msg.channel.send(`${Utils.emojis.unavailable} **That's not a valid command or category.**`);
+      if (!category || category.hidden)
+        return msg.channel.send(`${Utils.emojis.unavailable} **That's not a valid command or category.**`);
       let num = 0;
       categoryArray.forEach((_category, i) => {
         if (_category.name === category.name) num = i + 2;

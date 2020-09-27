@@ -27,7 +27,7 @@ module.exports = class Command {
       args = new Array(),
       cooldown = 6,
       hasSubs = false,
-      hidden = false,
+      hidden = null,
     },
   ) {
     this.client = client;
@@ -50,6 +50,9 @@ module.exports = class Command {
     }
     if (permissions.user === null) {
       this.permissions.user = category.pemission || 'user';
+    }
+    if (hidden === null) {
+      this.hidden = category.hidden || false;
     }
     // TODO: Fix bad code.
     // End of bad code.

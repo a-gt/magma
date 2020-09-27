@@ -1,15 +1,11 @@
 module.exports = class extends Command {
   constructor (...options) {
     super(...options, {
-      name        : 'args',
-      aliases     : [
+      name    : 'args',
+      aliases : [
         'arg',
       ],
-      hidden      : true,
-      permissions : {
-        user : 'dev',
-      },
-      args        : [
+      args    : [
         {
           key      : 'args',
           required : true,
@@ -27,7 +23,7 @@ module.exports = class extends Command {
       embed : {
         color       : Utils.colors.embed,
         title       : 'Args Info',
-        description : `\`\`\`Arguments: ${args.args}\nArguments length: ${args.args.length}\`\`\``,
+        description : `**\`\`\`Arguments: ${args.args}\nArguments length: ${args.args.length}\`\`\`**`,
       },
     });
   }
