@@ -19,16 +19,7 @@ module.exports = class extends Command {
   run (msg, args) {
     const prefix = '?';
     const { commands, categories } = this.client;
-    const categoryArray = categories.array().sort((a, b) => a.index - b.index).filter(category => {
-      let hasPerms = true;
-      if (msg.guild) {
-        const member = msg.guild.member(msg.author);
-        const perm = msg.client.permissionLevels[category.permission];
-        // Check perms
-        hasPerms = perm.check(member);
-      }
-      return hasPerms;
-    });
+    const categoryArray = categories.array().sort((a, b) => a.index - b.index);
     // Set up paginated embed
     const categoryNames =
       '**Page 1:** *Magma Help*\n' +
@@ -55,41 +46,55 @@ module.exports = class extends Command {
     categoryArray.map(category => {
       const fields = [];
 
-      category.commands
-        .filter(_command => {
-          let hasPerms = true;
-          if (msg.guild) {
-            const member = msg.guild.member(msg.author);
-            const perm = msg.client.permissionLevels[this.client.getCommand(_command).permissions.user];
-            // Check perms
-            hasPerms = perm.check(member);
-          }
-          return hasPerms;
-        })
-        .map(_command => {
-          const command = commands.get(_command);
-          if (command.hidden) return;
-          fields.push({
-            name  : `${fields.length + 1}. ${prefix}${command.usage}`,
-            value : `\`\`\`${command.description}\`\`\``,
-          });
-          if (command.hasSubs) {
-            command.commands.forEach(sub => {
-              if (sub.hidden) return;
-              fields.push({
-                name  : `${fields.length + 1}. ${prefix}${command.name}${
-                  command.aliases[0] === undefined ? '' :
-                  `/${command.aliases.join('/')}`} ${sub.usage}`,
-                value : `\`\`\`${sub.description}\`\`\``,
-              });
-            });
-          }
+      category.commands.map(_command => {
+        const command = commands.get(_command);
+        if (command.hidden) return;
+        let hasPerms = true;
+        if (msg.guild) {
+          const member = msg.guild.member(msg.author);
+          const perm = msg.client.permissionLevels[category.permission];
+          // Check perms
+          hasPerms = perm.check(member);
+        }
+        fields.push({
+          name  : `${fields.length + 1}. ${prefix}${command.usage}`,
+          value : `\`\`\`${command.description}\`\`\`${
+            !hasPerms ? `${Utils.emojis.unavailable} **You do not have enough permissions to run this.**` :
+            ''}`,
         });
+        if (command.hasSubs) {
+          command.commands.forEach(sub => {
+            if (sub.hidden) return;
+            let subHasPerms = true;
+            if (msg.guild) {
+              const member = msg.guild.member(msg.author);
+              const perm = msg.client.permissionLevels[category.permission];
+              // Check perms
+              subHasPerms = perm.check(member);
+            }
+            fields.push({
+              name  : `${fields.length + 1}. ${prefix}${command.name}${
+                command.aliases[0] === undefined ? '' :
+                `/${command.aliases.join('/')}`} ${sub.usage}`,
+              value : `\`\`\`${sub.description}\`\`\`${
+                !subHasPerms ? `${Utils.emojis.unavailable} **You do not have enough permissions to run this.**` :
+                ''}`,
+            });
+          });
+        }
+      });
       if (fields.length === 0) {
         fields.push({
           name  : `No commands found for this category.`,
           value : String.fromCharCode(8203),
         });
+      }
+      let hasPerms = true;
+      if (msg.guild) {
+        const member = msg.guild.member(msg.author);
+        const perm = msg.client.permissionLevels[category.permission];
+        // Check perms
+        hasPerms = perm.check(member);
       }
       data.push({
         author      : {
@@ -100,7 +105,9 @@ module.exports = class extends Command {
         thumbnail   : {
           url : category.thumbnail,
         },
-        description : category.description,
+        description : `${category.description}\n${
+          !hasPerms ? `${Utils.emojis.unavailable} **You do not have enough permissions to run commands any in this category.**` :
+          ''}`,
         fields,
       });
     });
