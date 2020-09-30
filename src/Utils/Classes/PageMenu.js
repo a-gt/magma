@@ -20,7 +20,6 @@ class PageMenu {
             return;
           });
       },
-      error = error => console.error(error),
       trash = false,
       jump = false,
       plainText = false,
@@ -37,7 +36,6 @@ class PageMenu {
     this.start = start - 1;
     this.embed = embed;
     this.end = end;
-    this.error = error;
     this.pageEmojis = pageEmojis;
     this.emojis = Object.keys(emojis);
     this.emojiFuncs = emojis;
@@ -145,21 +143,24 @@ class PageMenu {
 
   async deleteReaction () {
     if (this.message.guild) {
-      const user = this.userId;
-      const userReactions = this.message.reactions.cache.filter(reactionUser => reactionUser.users.cache.has(user));
+      const userReactions = this.message.reactions.cache.filter(reactionUser =>
+        reactionUser.users.cache.has(this.message.client.user.id),
+      );
       try {
         for (const reactionEmoji of userReactions.values()) {
-          await reactionEmoji.users.remove(user);
+          reactionEmoji.users.cache
+            .filter(user => user.id !== this.message.client.user.id)
+            .forEach(user => reactionEmoji.users.remove(user));
         }
       } catch (e) {
-        return this.error(e);
+        throw new Error(e);
       }
     }
     else {
       this.message
         .delete({
           timeout : 0,
-          reson   : 'Free up clutter',
+          reson   : '',
         })
         .catch(() => {
           return;
@@ -207,7 +208,12 @@ class PageMenu {
   reaction () {
     const message = this.message;
     const filter = (reaction, user) => {
-      return this.allEmojis.includes(reaction.emoji.name || reaction.emoji.id) && user.id === this.userId;
+      return (
+        this.allEmojis.includes(reaction.emoji.name || reaction.emoji.id) &&
+        (
+          typeof this.userID === 'array' ? this.userID.includes(user.id) :
+          user.id === this.userId)
+      );
     };
     message
       .awaitReactions(filter, {
@@ -231,7 +237,7 @@ class PageMenu {
             this.forward();
           }
         }
-        else if (name === Utils.emojis.trash) {
+        else if (name === Utils.emojis.trash && this.trash) {
           if (this.trash) {
             message
               .delete({
@@ -243,7 +249,7 @@ class PageMenu {
               });
           }
         }
-        else if (name === Utils.emojis.jump) {
+        else if (name === Utils.emojis.jump && this.trash) {
           if (this.jump) {
             const filter = response => {
               return !isNaN(parseInt(response, 10));
@@ -305,7 +311,7 @@ class PageMenu {
             try {
               this.emojiFuncs[name](this.message);
             } catch (error) {
-              this.error(error);
+              throw new Error(error);
             }
           }
           this.deleteReaction();
