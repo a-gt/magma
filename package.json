@@ -33,7 +33,7 @@
     "chalk": "^4.1.0",
     "discord.js": "^12.3.1",
     "dotenv": "^8.2.0",
-    "lodash": "^4.17.20",
+    "lodash": "^4.17.21",
     "moment": "^2.27.0",
     "mongoose": "^5.10.5",
     "node-vibrant": "^3.1.5",
