@@ -35,7 +35,7 @@
     "dotenv": "^8.2.0",
     "lodash": "^4.17.21",
     "moment": "^2.27.0",
-    "mongoose": "^5.10.5",
+    "mongoose": "^5.13.17",
     "node-vibrant": "^3.1.5",
     "numeral": "^2.0.6",
     "yaml": "^1.10.0"
